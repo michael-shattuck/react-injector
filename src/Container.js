@@ -3,12 +3,13 @@ let isClass = (subject) => {
 }
 
 let hasDependencies = (subject) => {
-    return typeof subject.declareDependencies === 'function'
+    return typeof subject.declareDependencies === 'function' || typeof subject.prototype.declareDependencies === 'function'
 }
 
 let injectClass = (subject, dependencyHierarchy) => {
     if (hasDependencies(subject)) {
-        let dependencies = resolveDependencies(subject.declareDependencies(), (dependencyHierarchy || [subject]))
+        let declareDependencies = subject.declareDependencies || subject.prototype.declareDependencies
+        let dependencies = resolveDependencies(declareDependencies(), (dependencyHierarchy || [subject]))
         return new subject(...dependencies)
     } else {
         return new subject()
