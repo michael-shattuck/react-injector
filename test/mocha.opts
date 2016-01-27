@@ -1,0 +1,6 @@
+--require chai
+--require sinon-chai
+--require test/babel.js
+--require test/spec-setup.js
+
+--reporter spec
