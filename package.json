@@ -1,17 +1,29 @@
 {
   "name": "react-injector",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.1",
+  "description": "Dependency injection or React",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michael-shattuck/react-injector"
+  },
   "scripts": {
-    "test": "mocha \"lib/**/*.spec.js\"",
+    "build": "babel ./src/ -d lib --ignore '__specs__'",
+    "prepublish": "npm run build",
+    "test": "mocha \"src/**/*.spec.js\"",
     "test-watch": "npm test -- --watch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "react-injector",
+    "react",
+    "injection",
+    "dependency injection"
+  ],
+  "author": "Michael Shattuck",
+  "license": "MIT",
   "devDependencies": {
     "babel": "^6.3.26",
+    "babel-cli": "^6.4.5",
     "babel-core": "^6.4.5",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^6.2.1",
