@@ -8,7 +8,7 @@
     "url": "https://github.com/michael-shattuck/react-injector"
   },
   "scripts": {
-    "build": "babel ./src/ -d lib --ignore '__specs__'",
+    "build": "babel src -d lib --ignore src/__specs__",
     "prepublish": "npm run build",
     "test": "mocha \"src/**/*.spec.js\"",
     "test-watch": "npm test -- --watch"
@@ -21,6 +21,10 @@
   ],
   "author": "Michael Shattuck",
   "license": "MIT",
+  "dependencies": {
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6"
+  },
   "devDependencies": {
     "babel": "^6.3.26",
     "babel-cli": "^6.4.5",
@@ -37,8 +41,6 @@
     "html-webpack-plugin": "^2.7.2",
     "jsx-chai": "^2.0.0",
     "mocha": "^2.4.2",
-    "react": "^0.14.6",
-    "react-dom": "^0.14.6",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "webpack": "^1.12.12",
