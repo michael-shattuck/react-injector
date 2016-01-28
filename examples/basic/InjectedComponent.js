@@ -9,6 +9,7 @@ export default class InjectedComponent extends React.Component {
             <div>
                 <h1>Injected Component</h1>
                 { this.props.Dependency.greet() }
+                <hr />
             </div>
         )
     }

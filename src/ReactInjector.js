@@ -2,24 +2,34 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import createElement from './createElement'
 
+let injectChildren = (children) => {
+    let elements
+    if (Array.isArray(children)) {
+        elements = children.map((child) => {
+            const { ...props } = child.props
+            return React.createElement.apply(React, [ child.type, { key: child.type.name, ...props }])
+        })
+    } else {
+        const { ...props } = children.props
+        return React.createElement.apply(React, [ children.type, { key: children.type.name, ...props }])
+    }
+
+    return elements
+}
+
 export default class ReactInjector extends Component {
     render() {
-        const { children, ...props } = this.props
-        // TODO: error if no children
+        React.uninjectedCreateElement = React.createElement
+        React.createElement = createElement
 
-        let elements
-        if (Array.isArray(children)) {
-            elements = children.map((child) => {
-                return createElement(child.type)
-            })
-        } else {
-            elements = createElement(children.type, props)
-        }
+        const { children } = this.props
+        // TODO: error if no children
+        // TODO: error if children not components
 
         return (
-            <div>
-                { elements }
-            </div>
+            <injectedContext>
+                { injectChildren(children) }
+            </injectedContext>
         )
     }
 }

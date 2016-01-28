@@ -3,11 +3,15 @@ import { NonInjectableComponent, InjectableComponent, DeepInjectableComponent, D
 import React, { ReactElement } from 'react'
 
 context('createElement', function() {
+    before(function() {
+        React.uninjectedCreateElement = React.createElement
+    })
+
     describe('When creating an element that is NOT injectable', function() {
         let element
 
         before(function() {
-            element = createElement(<NonInjectableComponent />)
+            element = createElement(NonInjectableComponent)
         })
 
         it('should return a react component', () => React.isValidElement(element).should.be.true)
@@ -17,7 +21,7 @@ context('createElement', function() {
         let element
 
         before(function() {
-            element = createElement(<InjectableComponent />)
+            element = createElement(InjectableComponent)
         })
 
         it('should return a react component', () => React.isValidElement(element).should.be.true)
@@ -29,25 +33,11 @@ context('createElement', function() {
         let element
 
         before(function() {
-            element = createElement(<DeepInjectableComponent />)
+            element = createElement(DeepInjectableComponent)
         })
 
         it('should return a react component', () => React.isValidElement(element).should.be.true)
         it('should have the injected props', () => element.props.DeepDependency.should.be.instanceof(DeepDependency))
         it('should be able to use the injected props', () => element.props.DeepDependency.say().should.equal("say cheese!"))
-    })
-
-    describe('When trying to create an element that is not a valid React component', function() {
-        let exception
-
-        before(function() {
-            try {
-                createElement("not a valid component")
-            } catch(e) {
-                exception = e
-            }
-        })
-
-        it('should throw an exception', () => exception.should.not.be.null)
     })
 })
