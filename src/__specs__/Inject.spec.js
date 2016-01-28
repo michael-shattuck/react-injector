@@ -6,7 +6,7 @@ import {
     Dependency2,
     injectedFunction
 } from './inject-specs-setup'
-import { Inject } from '../Inject'
+import { InjectDirect } from '../Inject'
 
 context('Inject decorator', function() {
     describe('When instantiating a class decorated with inject', function() {
@@ -43,7 +43,7 @@ context('Inject decorator', function() {
         let dependencies
 
         beforeEach(function() {
-            subject = Inject(injectedFunction, [ Dependency1, Dependency2 ])
+            subject = InjectDirect(injectedFunction, [ Dependency1, Dependency2 ])
             dependencies = subject.declareDependencies()
         })
 
@@ -57,7 +57,7 @@ context('Inject decorator', function() {
         let dependencies
 
         beforeEach(function() {
-            subject = Inject(Injected, [ Dependency1, Dependency2 ])
+            subject = InjectDirect(Injected, [ Dependency1, Dependency2 ])
             dependencies = subject.declareDependencies()
         })
 

@@ -11,10 +11,13 @@ let createDeclaration = (target, dependencies) => {
 export default (dependencies) => {
     return (target) => {
         createDeclaration(target.prototype, dependencies)
+        if (typeof target.type === 'function') {
+            createDeclaration(target.prototype, dependencies)
+        }
     }
 }
 
-export function Inject(target, dependencies) {
+export function InjectDirect(target, dependencies) {
     createDeclaration(target, dependencies)
     return target
 }

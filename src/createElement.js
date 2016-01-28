@@ -2,13 +2,13 @@ import React from 'react'
 import Container from './Container'
 
 let isInjectable = (component) => {
-    return typeof component.type.prototype.declareDependencies === 'function'
+    return typeof component.prototype.declareDependencies === 'function'
 }
 
 export default function createElement(component, props, children) {
     if (isInjectable(component)) {
         let injectedDependencyProps = {}
-        component.type.prototype.declareDependencies().forEach((dependency) => {
+        component.prototype.declareDependencies().forEach((dependency) => {
             injectedDependencyProps[dependency.name] = Container.get(dependency)
         })
 

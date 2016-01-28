@@ -1,5 +1,4 @@
 import Inject from '../Inject'
-import { InjectFunction } from '../Inject'
 
 export class Dependency1 {}
 export class Dependency2 {}
