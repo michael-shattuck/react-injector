@@ -54,10 +54,10 @@ export default class Greeter {
 ```
 When we call the greet method on the class above it will return `Hello, World!`. Let's break down the above snippet. The `Inject` decorator takes an array of dependencies. These dependencies are then injected into the constructor when the class is instantiated.
 
-The dependencies can actually be pretty much anything. Dependencies that are classes and happen to need their own injected dependencies also will be properly injected upon insertion into the constructor. Any other type will be directly transated into the constructor.
+The dependencies can actually be pretty much anything. Dependencies that are classes and happen to need their own injected dependencies also will be properly injected upon insertion into the constructor. Any other type will be directly translated into the constructor.
 
 ### React Component Injection
-React components have their dependencies injected in a slightly different way. This is because React itself abstracts the instantiation of components. Due to this restrain dependencies are injected into a components props.
+React components have their dependencies injected in a slightly different way. This is because React itself abstracts the instantiation of components. Due to this restraint dependencies are injected into a component's props.
 
 Using our `AmazingDependency` from above let's set up a new component for injection.
 ```javascript
