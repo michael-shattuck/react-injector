@@ -2,7 +2,7 @@ import createElement from '../createElement'
 import { NonInjectableComponent, InjectableComponent, DeepInjectableComponent, DeepDependency, Dependency1 } from './create-element-specs-setup'
 import React, { ReactElement } from 'react'
 
-context('createElement', function() {
+context('createElement:', function() {
     before(function() {
         React.uninjectedCreateElement = React.createElement
     })

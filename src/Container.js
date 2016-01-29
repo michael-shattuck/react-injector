@@ -1,27 +1,23 @@
-let isClass = (subject) => {
-  return typeof subject === 'function' && (/^\s*class\s+/.test(subject.toString()) || /_class\S+/i.test(subject.toString()));
+let hasDependencies = (subject) => {
+    return subject.hasOwnProperty('prototype') && ('__dependencies__' in subject || '__dependencies__' in subject.prototype)
 }
 
-let hasDependencies = (subject) => {
-    return typeof subject.declareDependencies === 'function' || typeof subject.prototype.declareDependencies === 'function'
+let isClass = (subject) => {
+    if (subject.hasOwnProperty('prototype') && subject.prototype.hasOwnProperty('__injectConfig__')) {
+        return subject.prototype.__injectConfig__.type !== 'function'
+    } else {
+        return typeof subject === 'function' && /^(?:class\s+|function\s+(?:_class|_default|[A-Z]))/.test(subject);
+    }
 }
 
 let injectClass = (subject, dependencyHierarchy) => {
     if (hasDependencies(subject)) {
-        let declareDependencies = subject.declareDependencies || subject.prototype.declareDependencies
-        let dependencies = resolveDependencies(declareDependencies(), (dependencyHierarchy || [subject]))
-        return new subject(...dependencies)
-    } else {
-        return new subject()
-    }
-}
+        let __dependencies__ = subject.__dependencies__ || subject.prototype.__dependencies__
+        let dependencies = resolveDependencies(__dependencies__(), (dependencyHierarchy || [subject]))
 
-let resolveFunction = (subject, dependencyHierarchy) => {
-    if (hasDependencies(subject)) {
-        let dependencies = resolveDependencies(subject.declareDependencies(), (dependencyHierarchy || [subject]))
-        return subject(...dependencies)
+        return isClass(subject) ? new subject(...dependencies) : subject(...dependencies)
     } else {
-        return subject
+        return isClass(subject) ? new subject() : subject
     }
 }
 
@@ -58,12 +54,6 @@ let resolveDependencies = (dependencies, dependencyHierarchy) => {
 
 export default class Container {
     static get(subject) {
-        if (isClass(subject)) {
-            return injectClass(subject)
-        } else if (typeof subject === 'function') {
-            return resolveFunction(subject)
-        } else {
-            return subject
-        }
+        return injectClass(subject)
     }
 }

@@ -10,12 +10,14 @@ import {
   DuplicateDependencies,
   SharedDependencies,
   basicFunction,
+  basicConfiguredFunction,
   dependentFunction,
+  configuredDependentFunction,
   Dependency1,
   Dependency2
 } from './container-specs-setup'
 
-context('Container', function() {
+context('Container:', function() {
     describe('When getting a class', function() {
         let subject
 
@@ -137,7 +139,7 @@ context('Container', function() {
         it('should throw a duplicate dependencies message', () => exception.should.equal('Duplicate dependency detected'))
     })
 
-    describe('When getting a function', function() {
+    describe('When getting a function with no dependencies', function() {
         let subject
 
         before(function() {
@@ -145,15 +147,43 @@ context('Container', function() {
         })
 
         it('should return a function', () => subject.should.be.a('function'))
+        it('be invocable', () => subject().should.equal('not a class'))
+    })
+
+    describe('When getting a configured function with no dependencies', function() {
+        let subject
+
+        before(function() {
+            subject = Container.get(basicFunction)
+        })
+
+        it('should return a function', () => subject.should.be.a('function'))
+        it('be invocable', () => subject().should.equal('not a class'))
     })
 
     describe('When getting a function with dependencies', function() {
         let subject
+        let message
 
         before(function() {
             subject = Container.get(dependentFunction)
+            message = subject()
         })
 
-        it('should invoke the function and the dependency', () => subject.should.be.an.instanceof(Dependency1))
+        it('should return a function', () => subject.should.be.a('function'))
+        it('should invoke the function and the dependency', () => message.should.be.instanceof(Dependency1))
+    })
+
+    describe('When getting a configured function with dependencies', function() {
+        let subject
+        let message
+
+        before(function() {
+            subject = Container.get(configuredDependentFunction)
+            message = subject()
+        })
+
+        it('should return a function', () => subject.should.be.a('function'))
+        it('should invoke the function and the dependency', () => message.should.be.instanceof(Dependency1))
     })
 })

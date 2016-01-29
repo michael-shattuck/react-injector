@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react'
 import Container from './Container'
 
 let isInjectable = (component) => {
-    return typeof component.prototype !== 'undefined' && typeof component.prototype.declareDependencies === 'function'
+    return component.hasOwnProperty('prototype') && component.prototype.hasOwnProperty('__dependencies__')
 }
 
 export default function createElement() {
@@ -12,7 +12,7 @@ export default function createElement() {
 
     if (isInjectable(component)) {
         let injectedDependencyProps = {}
-        component.prototype.declareDependencies().forEach((dependency) => {
+        component.prototype.__dependencies__().forEach((dependency) => {
             injectedDependencyProps[dependency.name] = Container.get(dependency)
         })
 

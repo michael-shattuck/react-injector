@@ -11,7 +11,8 @@
     "build": "babel src -d lib --ignore src/__specs__",
     "prepublish": "npm run build",
     "test": "mocha \"src/**/*.spec.js\"",
-    "test-watch": "npm test -- --watch"
+    "test-watch": "npm test -- --watch",
+    "example": "webpack-dev-server --content-base examples/basic"
   },
   "keywords": [
     "react-injector",

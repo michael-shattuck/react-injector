@@ -1,21 +1,34 @@
-export class Dependency1 {}
-export class Dependency2 {}
-export class NoDependencies {}
+export class Dependency1 {
+    greet() {
+        return "Hello world"
+    }
+}
 
+export class Dependency2 {
+    greet() {
+        return "Hello world"
+    }
+}
+
+export class NoDependencies {
+    greet() {
+        return "Hello world"
+    }
+}
 
 export class SingleDependency {
-    static declareDependencies()  { return [ Dependency1 ] };
+    static __dependencies__()  { return [ Dependency1 ] };
 
     constructor(dependency) {
         this.dependency = dependency
     }
 }
 export class BadDependencies {
-    static declareDependencies()  { return '' };
+    static __dependencies__()  { return '' };
 }
 
 export class MultipleDependencies {
-    static declareDependencies()  { return [ Dependency1, Dependency2 ] };
+    static __dependencies__()  { return [ Dependency1, Dependency2 ] };
 
     constructor(dependency1, dependency2) {
         this.dependency1 = dependency1
@@ -24,7 +37,7 @@ export class MultipleDependencies {
 }
 
 export class PrimitiveDependencies {
-    static declareDependencies()  { return [ 'a dependency', 123 ] };
+    static __dependencies__()  { return [ 'a dependency', 123 ] };
 
     constructor(dependency1, dependency2) {
         this.dependency1 = dependency1
@@ -33,7 +46,7 @@ export class PrimitiveDependencies {
 }
 
 export class DeepDependencies {
-    static declareDependencies()  { return [ SingleDependency ] };
+    static __dependencies__()  { return [ SingleDependency ] };
 
     constructor(dependency) {
         this.dependency = dependency
@@ -41,19 +54,19 @@ export class DeepDependencies {
 }
 
 export class CircularDependencies {
-    static declareDependencies()  { return [ CircularDependencies2 ] };
+    static __dependencies__()  { return [ CircularDependencies2 ] };
 }
 
 export class CircularDependencies2 {
-    static declareDependencies()  { return [ CircularDependencies ] };
+    static __dependencies__()  { return [ CircularDependencies ] };
 }
 
 export class DuplicateDependencies {
-    static declareDependencies()  { return [ Dependency1, Dependency1 ] };
+    static __dependencies__()  { return [ Dependency1, Dependency1 ] };
 }
 
 export class SharedDependencies {
-    static declareDependencies()  { return [ SingleDependency, MultipleDependencies ] };
+    static __dependencies__()  { return [ SingleDependency, MultipleDependencies ] };
 
     constructor(dependency1, dependency2) {
         this.dependency1 = dependency1
@@ -65,9 +78,25 @@ let basicFunction = () => {
     return 'not a class'
 }
 
-let dependentFunction = (dependency) => {
-    return dependency
+let basicConfiguredFunction = () => {
+    return 'not a class'
 }
-dependentFunction.declareDependencies = () => { return [ Dependency1 ] }
+basicConfiguredFunction.prototype.__injectConfig__ = { type: 'function' }
 
-export { basicFunction, dependentFunction }
+let dependentFunction = (dependency) => {
+    return () => {
+        return dependency
+    }
+}
+dependentFunction.prototype.__dependencies__ = () => { return [ Dependency1 ] }
+
+
+let configuredDependentFunction = (dependency) => {
+    return () => {
+        return dependency
+    }
+}
+configuredDependentFunction.prototype.__dependencies__ = () => { return [ Dependency1 ] }
+configuredDependentFunction.prototype.__injectConfig__ = { type: 'function' }
+
+export { basicFunction, basicConfiguredFunction, dependentFunction, configuredDependentFunction }
