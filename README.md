@@ -24,7 +24,7 @@ render((
 ```
 That's it! Your application is now set up for dependency injection.
 
-### Dependency Declaration
+### Class Dependency Declaration
 The easiest way set up dependencies is to leverage the `Inject` decorator provided by React Injector.
 *Keep in mind that decorators are still experimental. In order to use decorators a library will need to be used for interpretation. Babel, for example, can be used alongside its `transform-decorators-legacy` plugin*
 
@@ -40,6 +40,7 @@ export default class AmazingDependency {
 We'll then create the class that uses `AmazingDependency` as the dependency we'll inject.
 ```javascript
 import { Inject } from 'react-injector'
+import AmazingDependency from './AmazingDependency'
 
 @Inject([ AmazingDependency ])
 export default class Greeter {
@@ -56,12 +57,39 @@ When we call the greet method on the class above it will return `Hello, World!`.
 
 The dependencies can actually be pretty much anything. Dependencies that are classes and happen to need their own injected dependencies also will be properly injected upon insertion into the constructor. Any other type will be directly translated into the constructor.
 
+### Function Dependency Declaration
+React Injector allows you to inject functions as dependencies as well. This can be done by specifying that a dependency is a function.
+
+```javascript
+import { Inject } from 'react-injector'
+
+Inject({ type: 'function' })
+export default function amazingFunction() {
+    return "You just called an amazing function"
+}
+```
+
+Functions can also be injected with dependencies. 
+```javascript
+import { Inject } from 'react-injector'
+import AmazingDependency from './AmazingDependency'
+
+Inject({ type: 'function' }, [ AmazingDependency ])
+export default function greet(amazingDependency) {
+    return () => {
+        return "Hello, " + amazingDependency.getAmazingText()
+    }
+}
+```
+Notice that the above greet function is actually a wrapper around another function. The wrapper function is injected with the dependency and invoked by the container. This means that when injected you will actually recieve the inner function having access to the dependencies in scope. 
+
 ### React Component Injection
 React components have their dependencies injected in a slightly different way. This is because React itself abstracts the instantiation of components. Due to this restraint dependencies are injected into a component's props.
 
 Using our `AmazingDependency` from above let's set up a new component for injection.
 ```javascript
 import { Inject } from 'react-injector'
+import AmazingDependency from './AmazingDependency'
 
 @Inject([ AmazingDependency ])
 export default class GreeterComponent {
@@ -70,7 +98,10 @@ export default class GreeterComponent {
     }
 }
 ```
-Rendering this component will display `Hello, World!` because the dependency was injected into the props object. Notice that the name on the props object matches the name of the dependency. This is by design.
+Rendering this component will display `Hello, World!` because the dependency was injected into the props object. Notice that the name on the props object matches the name of the dependency. This is by design. However, if you decide to uglify your code leveraging the `mangle` option the name of the dependency will change, but props will not be updated. To avoid this either don't use this option or change your code to access dependency props in a different way. Example:
+```javascript
+this.props[AmazingDependency.name].getAmazingText()
+```
 
 ### Decorator Alternative
 React Injector provides an alternative to `Inject` because decorators are still experimental. The `InjectDirect` function can be used in it's place.
